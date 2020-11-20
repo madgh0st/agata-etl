@@ -1,0 +1,4 @@
+code,eventdate,counterpartyName,counterpartyInn,sheetname,name_do,loaddate,modificationdate,filename,error_status,id_sha2,taxName,taxArrears,penalties,arrearsFine,totalArrears
+code1,1971-01-01,company1,001,null,do1,01.02.1970,01.02.1970,fns-arrears-test.xml,OK,8082b92276f68dd92d60ceb36515e84821815e65ac545222135828be84d0fcf0,taxName1,0.00,1.00,2.00,3.00
+code1,1971-01-01,company1,001,null,do3,01.02.1970,01.02.1970,fns-arrears-test.xml,OK,8082b92276f68dd92d60ceb36515e84821815e65ac545222135828be84d0fcf0,taxName1,0.00,1.00,2.00,3.00
+code1,1971-01-01,company1,001,null,do2,01.02.1970,01.02.1970,fns-arrears-test.xml,OK,8082b92276f68dd92d60ceb36515e84821815e65ac545222135828be84d0fcf0,taxName1,0.00,1.00,2.00,3.00

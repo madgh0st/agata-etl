@@ -1,0 +1,3 @@
+claimDate,inn,name,nameSpark,outcomeDate,caseNumber,category,claimAmount,claimCharge,contractorID,dictum,outcome,outcomeAmount,side,status,sheetName,loadDate,modificationDate,fileName,code,name_do,eventDate
+1/21/1970,001,«company1»,company1 ооо,1/22/1970,101,Прочее,201,о взыскании 201 рубля,301,В удовлетворении исковых требований отказать.,Иск не удовлетворен,401,side1,Завершено,Арбитражные дела,1970-01-03,1970-01-04,filename1,,,
+3/21/1970,003,«company3»,company3 ооо,3/22/1970,103,Прочее,203,,303,,,403,side3,Рассматривается в 1-й инстанции,Арбитражные дела,1970-03-03,1970-03-04,filename3,,,

@@ -1,0 +1,3 @@
+name_do,fileName,sheetName,modificationDate,loadDate,companyName,normCompanyName,inn,decisionDate,id_sha2
+do1,file1,sheet1,01-01-1970,02-01-1970,company1,COMPANY1,001,03.01.1970,29fdfb29a78d0073fccafa385fe93326c8544ed525fb485f32a8bec2668666cc
+do1,file1,sheet1,04-01-1970,05-01-1970,«ООО company3»,COMPANY3,003,06.01.1970,0bd9b0399a022f1ab37bbd911ebcb9875813524f2f304e5875b7ff84e0a793f7

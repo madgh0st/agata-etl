@@ -1,0 +1,4 @@
+code,eventdate,name_do,fileName,sheetName,loadDate,organizationFullName,normOrganizationFullName,ogrn,inn,kpp,address,id_sha2
+code1,1970-01-01,do1,data-01011970-structure-02011970.csv,sheet1,04-01-1970,company1,COMPANY1,201,001,101,address1,568fe64e7fb2a93fb35517f0f6c0c9ce6c55eebeddac5d486c3db379fc603906
+code1,1970-01-01,do3,data-01011970-structure-02011970.csv,sheet1,04-01-1970,company1,COMPANY1,201,001,101,address1,568fe64e7fb2a93fb35517f0f6c0c9ce6c55eebeddac5d486c3db379fc603906
+code1,1970-01-01,do2,data-01011970-structure-02011970.csv,sheet1,04-01-1970,company1,COMPANY1,201,001,101,address1,568fe64e7fb2a93fb35517f0f6c0c9ce6c55eebeddac5d486c3db379fc603906

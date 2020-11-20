@@ -1,0 +1,6 @@
+start_sql...
+{replacer_union_rsbu_limit}
+		union
+some sql...
+{replacer_union_msfo_limit}
+end_sql;

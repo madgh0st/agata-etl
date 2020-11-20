@@ -1,0 +1,3 @@
+code,id_sha2,fileName,sheetName,modificationDate,loadDate,eventDate,name_do,ownerCode,erpCode,number,name,date,inn,validityPeriod,contractKind,settlementCurrency,settlementManagement,markRemove,paymentTerm,error_status
+code1,d853b0668167135834634301abbee790e46fa26b03d49e4a4e439cafd623b8d8,filename1,sheet1,1970-01-04,1970-01-03,1970-01-30,sort_do,ownerCode1,erpCode1,number1,company1,30.01.1970,001,validityPeriod1,contractKind1,settlementCurrency1,settlementManagement1,markRemove1,paymentTerm1,OK
+,98cfef0fe69751585e20b63b60dcb1e1d17ae9cb1a5e775381cfdaf74b2ec82a,filename3,sheet3,1970-01-04,1970-01-03,1970-01-30,sm,ownerCode3,erpCode3,number3,company3,30.01.1970,003,validityPeriod3,contractKind3,settlementCurrency3,settlementManagement3,markRemove3,paymentTerm3,NOT_MAPPING

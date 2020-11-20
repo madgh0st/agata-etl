@@ -1,0 +1,6 @@
+#!/usr/bin/env bash 
+
+export P=$(pwd)
+mvn "-Dmaven.repo.local=$P/repo" dependency:resolve-plugins dependency:go-offline
+mvn "-Dmaven.repo.local=$P/repo" -DskipTests -o clean package -Pthin
+mvn "-Dmaven.repo.local=$P/repo" -DskipTests -o clean package -Pshade

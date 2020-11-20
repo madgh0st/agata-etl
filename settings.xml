@@ -1,0 +1,39 @@
+<settings>
+    <mirrors>
+        <mirror>
+            <id>central</id>
+            <name>Central Mirror Repository</name>
+            <url>${repo.central.url}</url>
+            <mirrorOf>central</mirrorOf>
+        </mirror>
+    </mirrors>
+
+    <servers>
+        <server>
+            <id>snapshots</id>
+            <username>${repo.username}</username>
+            <password>${repo.password}</password>
+        </server>
+        <server>
+            <id>releases</id>
+            <username>${repo.username}</username>
+            <password>${repo.password}</password>
+        </server>
+        <server>
+            <id>central</id>
+            <username>${repo.username}</username>
+            <password>${repo.password}</password>
+        </server>
+    </servers>
+    
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <url>${repo.release.url}</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <url>${repo.snapshot.url}</url>
+        </snapshotRepository>
+    </distributionManagement>
+</settings>

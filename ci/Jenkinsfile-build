@@ -1,0 +1,84 @@
+withFolderProperties{
+//base envs    
+    OCP_NAMESPACE = env.OCP_NAMESPACE ?: ''
+    OCP_APP_NAME = env.OCP_APP_NAME ?: ''
+    BUILD_ENVIRONMENT = env.BUILD_ENVIRONMENT ?: ''
+    BUILD_ENVIRONMENT_UPPER_CASE = BUILD_ENVIRONMENT ? "_${BUILD_ENVIRONMENT.toUpperCase()}" : ''
+    REGISTRY = env.getProperty("REGISTRY${BUILD_ENVIRONMENT_UPPER_CASE}")
+    REGISTRY_CRED_ID = env.getProperty("REGISTRY${BUILD_ENVIRONMENT_UPPER_CASE}_CRED_ID")
+    DOCKER_RH_REGISTRY = env.getProperty("DOCKER_RH_REGISTRY${BUILD_ENVIRONMENT_UPPER_CASE}")
+    DSO_BUILDER_CRED_ID = env.getProperty("DSO_BUILDER_CRED_ID")
+    SASS_BINARY_SITE = env.getProperty("SASS_BINARY_SITE${BUILD_ENVIRONMENT_UPPER_CASE}")
+    YUM_REPOSITORY = env.getProperty("YUM_REPOSITORY${BUILD_ENVIRONMENT_UPPER_CASE}") ?: ''
+//build envs
+    MVN_REPO_SNAPSHOT_URL = env.getProperty("MVN_REPO_SNAPSHOT_URL${BUILD_ENVIRONMENT_UPPER_CASE}")
+    MVN_REPO_RELEASE_URL = env.getProperty("MVN_REPO_RELEASE_URL${BUILD_ENVIRONMENT_UPPER_CASE}")
+    MVN_CENTRAL_URL = env.getProperty("MVN_CENTRAL_URL${BUILD_ENVIRONMENT_UPPER_CASE}")
+}
+
+pipeline {
+    agent {
+        label "${BUILD_ENVIRONMENT}"
+    }
+
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+    }
+
+    environment {
+        GIT_COMMIT_SHORT = sh(
+            script: "printf \$(git rev-parse --short ${GIT_COMMIT})",
+            returnStdout: true
+        )
+    }
+
+    stages {
+        stage("Set build name") {
+            steps {
+                // use name of the patchset as the build name
+                wrap([$class: 'BuildUser']){
+                    script {
+                        if ("${params.BRANCH}" == 'null') {
+                            buildName "$BUILD_NUMBER-$GIT_COMMIT_SHORT"
+                        } else {
+                            buildName "$BUILD_NUMBER-$BUILD_ENVIRONMENT-${params.BRANCH}-$GIT_COMMIT_SHORT"
+                        }
+                    }
+                    buildDescription "Executed @ ${NODE_NAME}. Build started by ${BUILD_USER}"
+                }
+            }
+        }
+
+        stage("Docker registry login") {
+            steps {
+                echo "=====docker login registry====="
+                withCredentials([usernamePassword(credentialsId: "$REGISTRY_CRED_ID", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                    docker login $REGISTRY -u $USERNAME -p $PASSWORD
+                    """
+                }
+            }
+        }
+
+        stage("Docker build image") {
+            steps {
+                echo "=====docker build====="
+                withCredentials([usernamePassword(credentialsId: "$DSO_BUILDER_CRED_ID", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                sh """
+                docker build --no-cache \
+                    --build-arg DOCKER_RH_REGISTRY=$DOCKER_RH_REGISTRY \
+                    --build-arg MVN_REPO_USERNAME=$USERNAME \
+                    --build-arg MVN_REPO_PASSWORD=$PASSWORD \
+                    --build-arg YUM_REPOSITORY=$YUM_REPOSITORY \
+                    --build-arg SASS_BINARY_SITE=$SASS_BINARY_SITE \
+                    --build-arg MVN_REPO_SNAPSHOT_URL=$MVN_REPO_SNAPSHOT_URL \
+                    --build-arg MVN_REPO_RELEASE_URL=$MVN_REPO_RELEASE_URL \
+                    --build-arg MVN_CENTRAL_URL=$MVN_CENTRAL_URL \
+                    -t $REGISTRY/$OCP_NAMESPACE/$OCP_APP_NAME:$GIT_COMMIT_SHORT \
+                    -f $DOCKERFILE_NAME .
+                """
+            }
+        }
+    }
+  }
+}

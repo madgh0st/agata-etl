@@ -1,0 +1,3 @@
+name_do,fileName,sheetName,modificationDate,loadDate,organizationFullName,normOrganizationFullName,eventdate,ogrn,inn,kpp,address,id_sha2
+do1,data-01011970-structure-02011970.csv,sheet1,03-01-1970,04-01-1970,company1,COMPANY1,1970-01-01,201,001,101,address1,568fe64e7fb2a93fb35517f0f6c0c9ce6c55eebeddac5d486c3db379fc603906
+do1,data-01031970-structure-02031970.csv,sheet1,03-03-1970,04-03-1970,«ООО company3»,COMPANY3,1970-03-01,203,003,103,address3,d4aea9c2f6c1e154ddf0bc60c5f488c41ba570b3076c40467597cd314179a7ff

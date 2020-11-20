@@ -1,0 +1,55 @@
+select r.*, case when r.code is null then 'NOT_MAPPING' else 'OK' end as error_status
+from (
+    select
+        max(md_1.code) as code,
+        leg.id_sha2,
+        leg.inn,
+        leg.name,
+        leg.norm_name,
+        leg.namespark,
+        leg.norm_namespark,
+        leg.name_do,
+        leg.claimdate,
+        leg.outcomedate,
+        leg.casenumber,
+        leg.category,
+        leg.claimAmount,
+        leg.claimcharge,
+        leg.contractorid,
+        leg.dictum,
+        leg.outcome,
+        leg.outcomeamount,
+        leg.side,
+        leg.status,
+        leg.sheetname,
+        leg.loaddate,
+        leg.modificationdate,
+        leg.filename
+    from {dbSchema}.union_legal_cases leg
+    left join (select distinct code, inn_clean FROM {dbSchema}.md_contractor_dict where inn_clean is not null) md_1
+    on leg.inn = md_1.inn_clean
+    group by
+        leg.id_sha2,
+        leg.inn,
+        leg.name,
+        leg.norm_name,
+        leg.namespark,
+        leg.norm_namespark,
+        leg.name_do,
+        leg.claimdate,
+        leg.outcomedate,
+        leg.casenumber,
+        leg.category,
+        leg.claimAmount,
+        leg.claimcharge,
+        leg.contractorid,
+        leg.dictum,
+        leg.outcome,
+        leg.outcomeamount,
+        leg.side,
+        leg.status,
+        leg.sheetname,
+        leg.loaddate,
+        leg.modificationdate,
+        leg.filename
+) r

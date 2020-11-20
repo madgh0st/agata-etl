@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>agata</groupId>
+    <artifactId>counterparty-etl</artifactId>
+    <version>0.7</version>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <!--Required version higher than 2.7 for successful tests passing,
+            more description in comments below task AGATA-881-->
+        <hadoop>2.8.1</hadoop>
+        <spark>2.3.0</spark>
+        <scala.version>2.11</scala.version>
+        <slf4j.log4j12>1.7.25</slf4j.log4j12>
+        <apache.poi>4.1.0</apache.poi>
+        <apache.commons.compress>1.18</apache.commons.compress>
+        <apache.commons.csv>1.4</apache.commons.csv>
+        <jackson>2.9.9</jackson>
+        <junit>4.12</junit>
+        <mockito>1.9.5</mockito>
+        <powermock>1.6.1</powermock>
+        <commons.lang3>3.9</commons.lang3>
+        <log4j>1.2.17</log4j>
+        <myrepo>http://nexus.gazprom-neft.local:8080/repository/maven-maven-external-dso</myrepo>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>releases</id>
+            <url>http://192.168.205.104:8081/repository/maven-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>snapshots</id>
+            <url>http://192.168.205.104:8081/repository/maven-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <profiles>
+        <profile>
+            <id>gpn-nexus-fat</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+            <properties>
+                <hadoopCommonScope>compile</hadoopCommonScope>
+                <sparkScope>compile</sparkScope>
+                <log4j12Scope>compile</log4j12Scope>
+                <apachePoiScope>compile</apachePoiScope>
+                <commonsLang3Scope>compile</commonsLang3Scope>
+                <jarname>${project.artifactId}-${project.version}-fat.jar</jarname>
+            </properties>
+
+            <repositories>
+                <repository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>central</id>
+                    <name>maven</name>
+                    <url>${myrepo}</url>
+                </repository>
+            </repositories>
+
+            <pluginRepositories>
+                <pluginRepository>
+                    <snapshots>
+                        <enabled>false</enabled>
+                    </snapshots>
+                    <id>central</id>
+                    <name>maven</name>
+                    <url>${myrepo}</url>
+                </pluginRepository>
+                </pluginRepositories>
+        </profile>
+
+        <profile>
+            <id>fat</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <hadoopCommonScope>compile</hadoopCommonScope>
+                <sparkScope>compile</sparkScope>
+                <log4j12Scope>compile</log4j12Scope>
+                <apachePoiScope>compile</apachePoiScope>
+                <commonsLang3Scope>compile</commonsLang3Scope>
+                <jarname>${project.artifactId}-${project.version}-fat.jar</jarname>
+            </properties>
+        </profile>
+        
+        <profile>
+            <id>thin</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <hadoopCommonScope>provided</hadoopCommonScope>
+                <sparkScope>provided</sparkScope>
+                <log4j12Scope>compile</log4j12Scope>
+                <apachePoiScope>provided</apachePoiScope>
+                <commonsLang3Scope>compile</commonsLang3Scope>
+                <jarname>${project.artifactId}-${project.version}-thin.jar</jarname>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>shade</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <hadoopCommonScope>compile</hadoopCommonScope>
+                <sparkScope>provided</sparkScope>
+                <log4j12Scope>provided</log4j12Scope>
+                <apachePoiScope>compile</apachePoiScope>
+                <commonsLang3Scope>compile</commonsLang3Scope>
+                <jarname>${project.artifactId}-${project.version}-libs.jar</jarname>
+            </properties>
+        </profile>
+
+    </profiles>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>shade-maven-plugin</artifactId>
+                <version>2.3</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <outputFile>
+                                ${project.build.directory}/${jarname}
+                            </outputFile>
+                            <relocations>
+                                <relocation>
+                                    <pattern>com.fasterxml.jackson</pattern>
+                                    <shadedPattern>shade.com.fasterxml.jackson</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.apache.commons</pattern>
+                                    <shadedPattern>shade.org.apache.commons</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>org.slf4j</pattern>
+                                    <shadedPattern>shade.org.slf4j</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>log4j</pattern>
+                                    <shadedPattern>shade.log4j</shadedPattern>
+                                </relocation>
+                            </relocations>
+                            <artifactSet>
+                                <includes>
+                                    <include>*:*</include>
+                                </includes>
+                            </artifactSet>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- plugin version specified because of this issue: https://issues.apache.org/jira/browse/MDEP-82-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.12.4</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <executions>
+                    <execution>
+                        <id>releases</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    
+    <dependencies>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-core_${scala.version}</artifactId>
+            <version>${spark}</version>
+            <scope>${sparkScope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-sql_${scala.version}</artifactId>
+            <version>${spark}</version>
+            <scope>${sparkScope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.log4j12}</version>
+            <scope>${log4j12Scope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.log4j12}</version>
+            <scope>${log4j12Scope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop}</version>
+            <scope>${hadoopCommonScope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-hive_${scala.version}</artifactId>
+            <version>${spark}</version>
+            <scope>${sparkScope}</scope>
+        </dependency>
+
+        <!--EXCEL-->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${apache.poi}</version>
+            <scope>${apachePoiScope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${apache.poi}</version>
+            <scope>${apachePoiScope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>${apache.commons.compress}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>${apache.commons.csv}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons.lang3}</version>
+            <scope>${commonsLang3Scope}</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-csv</artifactId>
+            <version>${jackson}</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-scala_${scala.version}</artifactId>
+            <version>${jackson}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>${powermock}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>${powermock}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-minicluster</artifactId>
+            <version>${hadoop}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven.surefire</groupId>
+            <artifactId>surefire-junit4</artifactId>
+            <version>2.12.4</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

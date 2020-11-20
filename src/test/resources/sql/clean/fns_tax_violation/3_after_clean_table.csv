@@ -1,0 +1,4 @@
+code,eventdate,counterpartyName,counterpartyInn,fine,sheetname,name_do,loaddate,modificationdate,filename,error_status,id_sha2
+code1,1970-01-01,company1,001,42.0000,sheet1,do1,02-01-1970,01-01-1970,src/test/resources/xml/fns-tax-violation-test.xml,OK,f01de8eaf7eee48aa3b81d59a4c4230ef317e85092bee24f30e16077fdd32942
+code1,1970-01-01,company1,001,42.0000,sheet1,do3,02-01-1970,01-01-1970,src/test/resources/xml/fns-tax-violation-test.xml,OK,f01de8eaf7eee48aa3b81d59a4c4230ef317e85092bee24f30e16077fdd32942
+code1,1970-01-01,company1,001,42.0000,sheet1,do2,02-01-1970,01-01-1970,src/test/resources/xml/fns-tax-violation-test.xml,OK,f01de8eaf7eee48aa3b81d59a4c4230ef317e85092bee24f30e16077fdd32942

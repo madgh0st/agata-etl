@@ -1,0 +1,21 @@
+SELECT x.code,
+       s.name_do,
+       x.fileName,
+       x.sheetName,
+       x.modificationDate,
+       x.loadDate,
+       x.debtorName,
+       x.normDebtorName                                                 AS counterpartyName,
+       coalesce(udf_convert_to_local_date(x.executiveDocumentDate),
+                udf_convert_to_local_date(x.proceedingInstitutionDate)) AS eventdate,
+       udf_convert_to_local_date(x.proceedingInstitutionDate)           AS proceedingInstitutionDate,
+       x.executiveDocumentType,
+       udf_convert_to_local_date(x.executiveDocumentDate)               AS executiveDocumentDate,
+       x.executiveDocumentObject,
+       x.executionObject,
+       x.debt,
+       x.remainingDebt,
+       x.dateAndCompletionReason,
+       x.id_sha2
+FROM (SELECT r.* FROM {dbSchema}.collisions_report_fssp r WHERE r.error_status = 'OK') x
+         CROSS JOIN ( {union_replacer} ) s

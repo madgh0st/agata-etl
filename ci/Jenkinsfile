@@ -1,0 +1,73 @@
+withFolderProperties{
+    MASTER = "${env.K8S_MASTER}"
+    TECH_USER = "${env.TECH_USER}"
+}
+
+pipeline {
+
+  agent any
+
+  options {
+      buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+      skipDefaultCheckout()
+  }
+
+  parameters {
+      gitParameter branchFilter: 'origin/(.*)', defaultValue: 'jenkins-deploy', name: 'BRANCH', type: 'PT_BRANCH',
+       selectedValue: 'DEFAULT', listSize: '10', useRepository: '${scm.userRemoteConfigs[0].url}'
+  }
+
+  environment {
+      MVN_REPO_SNAPSHOT_URL = 'https://artifactory-gpn.nexign.com:443/artifactory/maven-gpn-snapshot-local'
+      MVN_REPO_RELEASE_URL = 'https://artifactory-gpn.nexign.com:443/artifactory/maven-gpn-release-local'
+      MVN_CENTRAL_URL = 'https://artifactory-gpn.nexign.com:443/artifactory/maven-central-remote'
+  }
+
+  stages {
+
+      stage("GIT checkout") {
+          steps {
+              echo "================== GIT checkout =================="
+              git branch: "${params.BRANCH}", credentialsId: "stash", url: "${scm.userRemoteConfigs[0].url}"
+          }
+      }
+
+      stage("Build") {
+          steps {
+              echo "================== Build Docker image =================="
+              script {
+              withCredentials([usernamePassword(credentialsId: "artifactory", usernameVariable: "MVN_REPO_USERNAME",
+               passwordVariable: "MVN_REPO_PASSWORD")]) {
+                  docker.image('docker-gpn.nexign.com/shared/openjdk/openjdk-11-rhel7')
+                      .inside("-u root") {
+                          stage('build') {
+                            sh 'source scl_source enable rh-maven36 && \
+                            mvn -ntp -B -s .mvn/settings.xml -Dmaven.test.skip=true \
+                            -Drepo.username=${MVN_REPO_USERNAME} \
+                            -Drepo.password=${MVN_REPO_PASSWORD} \
+                            -Drepo.snapshot.url=${MVN_REPO_SNAPSHOT_URL} \
+                            -Drepo.release.url=${MVN_REPO_RELEASE_URL} \
+                            -Drepo.central.url=${MVN_CENTRAL_URL} \
+                            clean deploy'
+                          }
+                      }
+                  }
+              }
+
+          }
+      }
+
+  }
+
+  post {
+      always {
+          script {
+              currentBuild.result = currentBuild.result ?: 'SUCCESS'
+              notifyBitbucket()
+          }
+          // Workspace Cleanup after build
+          cleanWs()
+      }
+  }
+
+}

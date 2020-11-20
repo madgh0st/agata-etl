@@ -1,0 +1,4 @@
+code,name_do,fileName,sheetName,modificationDate,loadDate,debtorName,counterpartyName,eventdate,proceedingInstitutionDate,executiveDocumentType,executiveDocumentDate,executiveDocumentObject,executionObject,debt,remainingDebt,dateAndCompletionReason,id_sha2
+code1,do1,file1,sheet1,1970-01-01,1970-01-02,company1,COMPANY1,1970-01-24,1970-01-23,type1,1970-01-24,obj1,obj1,123,123,smth,42c179eba84c0df44f02b3c50b793a94fc64cbd3d1b4b6430f89130fa07b6bad
+code1,do2,file1,sheet1,1970-01-01,1970-01-02,company1,COMPANY1,1970-01-24,1970-01-23,type1,1970-01-24,obj1,obj1,123,123,smth,42c179eba84c0df44f02b3c50b793a94fc64cbd3d1b4b6430f89130fa07b6bad
+code1,do3,file1,sheet1,1970-01-01,1970-01-02,company1,COMPANY1,1970-01-24,1970-01-23,type1,1970-01-24,obj1,obj1,123,123,smth,42c179eba84c0df44f02b3c50b793a94fc64cbd3d1b4b6430f89130fa07b6bad
