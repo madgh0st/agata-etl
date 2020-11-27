@@ -8,19 +8,31 @@
         </mirror>
     </mirrors>
 
+    <repositories>
+        <repository>
+            <id>maven-group</id>
+            <url>http://192.168.205.104:8081/repository/maven-public/</url>
+        </repository>
+    </repositories>
+
     <servers>
         <server>
-            <id>snapshots</id>
+            <id>nexus-snapshots</id>
             <username>${repo.username}</username>
             <password>${repo.password}</password>
         </server>
         <server>
-            <id>releases</id>
+            <id>nexus-releases</id>
             <username>${repo.username}</username>
             <password>${repo.password}</password>
         </server>
         <server>
             <id>central</id>
+            <username>${repo.username}</username>
+            <password>${repo.password}</password>
+        </server>
+        <server>
+            <id>maven-group</id>
             <username>${repo.username}</username>
             <password>${repo.password}</password>
         </server>

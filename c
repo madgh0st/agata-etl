@@ -18,6 +18,7 @@ MVN_REPO_PASSWORD=5mC8Jmxv
 MVN_REPO_SNAPSHOT_URL='http://192.168.205.104:8081/repository/maven-snapshots/'
 MVN_REPO_RELEASE_URL='http://192.168.205.104:8081/repository/maven-releases/'
 MVN_CENTRAL_URL='http://192.168.205.104:8081/repository/maven-central/'
+MVN_PUBLIC_URL='http://192.168.205.104:8081/repository/maven-public/'
 
 echo 'Выполняем цель: '$command
 
@@ -34,6 +35,7 @@ mvn -s settings.xml -Dmaven.test.skip=true \
     -Drepo.snapshot.url=${MVN_REPO_SNAPSHOT_URL} \
     -Drepo.release.url=${MVN_REPO_RELEASE_URL} \
     -Drepo.central.url=${MVN_CENTRAL_URL} \
+    -Drepo.public.url=${MVN_PUBLIC_URL} \
     -P$profile \
      $command
 
