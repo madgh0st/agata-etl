@@ -18,6 +18,29 @@ pipeline {
                 echo "MVN_REPO_PUBLIC_URL = ${MVN_REPO_PUBLIC_URL}"
             }
         }
+        stage("Build") {
+          steps {
+              echo "================== Build Docker image =================="
+              script {
+              withCredentials([usernamePassword(credentialsId: "nexus", usernameVariable: "MVN_REPO_USERNAME",
+               passwordVariable: "MVN_REPO_PASSWORD")]) {
+                  docker.image('registry.access.redhat.com/openjdk/openjdk-11-rhel7:latest')
+                      .inside("-u root") {
+                          stage('build') {
+                            sh 'source scl_source enable rh-maven36 && \
+                            mvn -s settings.xml -Dmaven.test.skip=true \
+                            -Drepo.username=${MVN_REPO_USERNAME} \
+                            -Drepo.password=${MVN_REPO_PASSWORD} \
+                            -Drepo.snapshot.url=${MVN_REPO_SNAPSHOT_URL} \
+                            -Drepo.release.url=${MVN_REPO_RELEASE_URL} \
+                            -Drepo.central.url=${MVN_CENTRAL_URL} \
+                            clean deploy'
+                          }
+                      }
+                  }
+              }
 
+          }
+        }
     }
 }
