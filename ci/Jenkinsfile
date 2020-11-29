@@ -1,6 +1,6 @@
 withFolderProperties{
-    MASTER = "${env.K8S_MASTER}"
-    TECH_USER = "${env.TECH_USER}"
+    //#MASTER = "${env.K8S_MASTER}"
+    //TECH_USER = "${env.TECH_USER}"
 }
 
 pipeline {
@@ -14,13 +14,15 @@ pipeline {
 
   parameters {
       gitParameter branchFilter: 'origin/(.*)', defaultValue: 'jenkins-deploy', name: 'BRANCH', type: 'PT_BRANCH',
-       selectedValue: 'DEFAULT', listSize: '10', useRepository: '${scm.userRemoteConfigs[0].url}'
+      selectedValue: 'DEFAULT', listSize: '10', useRepository: '${scm.userRemoteConfigs[0].url}'
   }
 
   environment {
-      MVN_REPO_SNAPSHOT_URL = 'https://artifactory-gpn.nexign.com:443/artifactory/maven-gpn-snapshot-local'
-      MVN_REPO_RELEASE_URL = 'https://artifactory-gpn.nexign.com:443/artifactory/maven-gpn-release-local'
-      MVN_CENTRAL_URL = 'https://artifactory-gpn.nexign.com:443/artifactory/maven-central-remote'
+        MVN_REPO='http://192.168.205.104:8081'
+        MVN_REPO_SNAPSHOT_URL="$MVN_REPO/repository/maven-snapshots/"
+        MVN_REPO_RELEASE_URL="$MVN_REPO/repository/maven-releases/"
+        MVN_CENTRAL_URL="$MVN_REPO/repository/maven-central/"
+        MVN_PUBLIC_URL="$MVN_REPO/repository/maven-public/"
   }
 
   stages {
@@ -58,16 +60,4 @@ pipeline {
       }
 
   }
-
-  post {
-      always {
-          script {
-              currentBuild.result = currentBuild.result ?: 'SUCCESS'
-              notifyBitbucket()
-          }
-          // Workspace Cleanup after build
-          cleanWs()
-      }
-  }
-
 }

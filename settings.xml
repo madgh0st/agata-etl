@@ -1,7 +1,7 @@
 <settings>
     <mirrors>
         <mirror>
-            <id>central</id>
+            <id>maven-central</id>
             <name>Central Mirror Repository</name>
             <url>${repo.central.url}</url>
             <mirrorOf>central</mirrorOf>
@@ -11,23 +11,23 @@
     <repositories>
         <repository>
             <id>maven-group</id>
-            <url>http://192.168.205.104:8081/repository/maven-public/</url>
+            <url>${repo.pubic.url}</url>
         </repository>
     </repositories>
 
     <servers>
         <server>
-            <id>nexus-snapshots</id>
+            <id>maven-snapshots</id>
             <username>${repo.username}</username>
             <password>${repo.password}</password>
         </server>
         <server>
-            <id>nexus-releases</id>
+            <id>maven-releases</id>
             <username>${repo.username}</username>
             <password>${repo.password}</password>
         </server>
         <server>
-            <id>central</id>
+            <id>maven-central</id>
             <username>${repo.username}</username>
             <password>${repo.password}</password>
         </server>

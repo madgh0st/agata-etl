@@ -29,22 +29,15 @@
         <commons.lang3>3.9</commons.lang3>
         <log4j>1.2.17</log4j>
     </properties>
-
-    <repositories>
-        <repository>
-            <id>maven-group</id>
-            <url>http://192.168.205.104:8081/repository/maven-public/</url>
-        </repository>
-    </repositories>
-
+    
     <distributionManagement>
         <snapshotRepository>
-            <id>nexus-snapshots</id>
-            <url>http://192.168.205.104:8081/repository/maven-snapshots/</url>
+            <id>maven-snapshots</id>
+            <url>${repo.snapshot.url}</url>
         </snapshotRepository>
         <repository>
-            <id>nexus-releases</id>
-            <url>http://192.168.205.104:8081/repository/maven-releases/</url>
+            <id>maven-releases</id>
+            <url>${repo.release.url}</url>
         </repository>
     </distributionManagement>
 
@@ -98,9 +91,7 @@
     </profiles>
 
     <build>
-
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
