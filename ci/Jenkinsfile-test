@@ -1,0 +1,23 @@
+pipeline {
+    agent any 
+    environment {
+        MVN_REPO='http://192.168.205.104:8081'
+        MVN_REPO_SNAPSHOT_URL="$MVN_REPO/repository/maven-snapshots/"
+        MVN_REPO_RELEASE_URL="$MVN_REPO/repository/maven-releases/"
+        MVN_REPO_CENTRAL_URL="$MVN_REPO/repository/maven-central/"
+        MVN_REPO_PUBLIC_URL="$MVN_REPO/repository/maven-public/"
+    }
+
+    stages {
+        stage("Display Parameters") {
+            steps {
+                echo "BRANCH = ${BRANCH}"
+                echo "MVN_REPO_RELEASE_URL = ${MVN_REPO_RELEASE_URL}"
+                echo "MVN_REPO_SNAPSHOT_URL = ${MVN_REPO_SNAPSHOT_URL}"
+                echo "MVN_REPO_CENTRAL_URL = ${MVN_REPO_CENTRAL_URL}"
+                echo "MVN_REPO_PUBLIC_URL = ${MVN_REPO_PUBLIC_URL}"
+            }
+        }
+
+    }
+}
